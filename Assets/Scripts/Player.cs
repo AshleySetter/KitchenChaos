@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
         transform.position += moveDir * moveSpeed * Time.deltaTime;
 
         transform.forward = Vector3.Slerp(transform.forward, moveDir, rotationSpeed * Time.deltaTime);
-        Debug.Log(inputVector);
     }
 
     public bool IsWalking()

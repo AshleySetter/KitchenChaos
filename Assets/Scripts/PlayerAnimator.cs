@@ -16,9 +16,6 @@ public class NewBehaviourScript : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(animator);
-        Debug.Log(player);
-        Debug.Log(player.IsWalking());
         animator.SetBool(IS_WALKING, player.IsWalking());
     }
 }

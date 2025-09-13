@@ -1,10 +1,12 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class Player : MonoBehaviour
 {
 
     [SerializeField] private float moveSpeed = 7f;
+    private float rotationSpeed = 10f;
 
+    private bool isWalking;
     private void Update()
     {
         Vector2 inputVector = new Vector2(0, 0);
@@ -28,7 +30,15 @@ public class PlayerController : MonoBehaviour
         inputVector = inputVector.normalized; // normalise so speed is always 1
 
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+        isWalking = moveDir != Vector3.zero;
         transform.position += moveDir * moveSpeed * Time.deltaTime;
+
+        transform.forward = Vector3.Slerp(transform.forward, moveDir, rotationSpeed * Time.deltaTime);
         Debug.Log(inputVector);
+    }
+
+    public bool IsWalking()
+    {
+        return isWalking;
     }
 }

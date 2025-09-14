@@ -15,6 +15,16 @@ public class Player : MonoBehaviour
     private bool isWalking;
     private Vector3 lastInteractDir;
 
+    private void Start()
+    {
+        gameInput.OnInteractAction += GameInput_OnInteractAction;
+    }
+
+    private void GameInput_OnInteractAction(object sender, System.EventArgs e)
+    {
+        HandleInteractions();
+    }
+
     private void Awake()
     {
         transform.forward = new Vector3(0, 0, -1).normalized; // face down the Z axis initially (towards camera)
@@ -23,7 +33,6 @@ public class Player : MonoBehaviour
     private void Update()
     {
         HandleMovement();
-        HandleInteractions();
     }
 
     private void HandleInteractions()

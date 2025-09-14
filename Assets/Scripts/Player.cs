@@ -1,7 +1,16 @@
+using System;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance { get; private set; } // Singleton instance as a C# property - static so only one instance exists, same for every instance of class
+
+    public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged; // event to be triggered when selected counter changes
+    public class OnSelectedCounterChangedEventArgs : EventArgs // custom EventArgs class to hold selected counter data
+    {
+        public ClearCounter selectedCounter;
+    }
 
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private GameInput gameInput;
@@ -14,6 +23,7 @@ public class Player : MonoBehaviour
 
     private bool isWalking;
     private Vector3 lastInteractDir;
+    private ClearCounter selectedCounter;
 
     private void Start()
     {
@@ -22,17 +32,26 @@ public class Player : MonoBehaviour
 
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
-        HandleInteractions();
+        if (selectedCounter != null)
+        {
+            selectedCounter.Interact();
+        }
     }
 
     private void Awake()
     {
         transform.forward = new Vector3(0, 0, -1).normalized; // face down the Z axis initially (towards camera)
+        if (Instance != null)
+        {
+            Debug.LogError("There is more than one Player instance in the scene!");
+        }
+        Instance = this; // Set the singleton instance to this instance of the class
     }
 
     private void Update()
     {
         HandleMovement();
+        HandleInteractions();
     }
 
     private void HandleInteractions()
@@ -48,9 +67,32 @@ public class Player : MonoBehaviour
         {
             if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
-                clearCounter.Interact();
+                if (clearCounter != selectedCounter)
+                {
+                    SetSelectedCounter(clearCounter);
+                }
+            }
+            else
+            {
+                // hit something else that is not a counter
+                SetSelectedCounter(null);
             }
         }
+        else
+        {
+            // did not hit anything
+            SetSelectedCounter(null);
+        }
+    }
+
+    private void SetSelectedCounter(ClearCounter selectedCounter)
+    {
+        this.selectedCounter = selectedCounter;
+
+        OnSelectedCounterChanged?.Invoke(
+            this,
+            new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter }
+        ); // Trigger the OnSelectedCounterChanged event when selected counter changes
     }
 
     private void HandleMovement()

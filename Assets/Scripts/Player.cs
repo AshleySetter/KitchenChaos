@@ -7,15 +7,62 @@ public class Player : MonoBehaviour
     [SerializeField] private GameInput gameInput;
 
     private float rotationSpeed = 10f;
+    private float playerHeight = 2f;
+    private float playerRadius = 0.7f;
 
     private bool isWalking;
     private void Update()
     {
         Vector2 inputVector = gameInput.GetMovementVectorNormalised();
-
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
         isWalking = moveDir != Vector3.zero;
-        transform.position += moveDir * moveSpeed * Time.deltaTime;
+        float moveDistance = moveSpeed * Time.deltaTime;
+        bool canMoveInInputDirection = !Physics.CapsuleCast(
+            transform.position,
+            transform.position + Vector3.up * playerHeight,
+            playerRadius,
+            moveDir,
+            moveDistance
+        );
+
+        if (canMoveInInputDirection)
+        {
+            transform.position += moveDir * moveDistance;
+        }
+        else
+        {
+            // Attempt only X movement
+            Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
+            bool canMoveX = !Physics.CapsuleCast(
+                transform.position,
+                transform.position + Vector3.up * playerHeight,
+                playerRadius,
+                moveDirX,
+                moveDistance
+            );
+            if (canMoveX)
+            {
+                moveDir = moveDirX;
+                transform.position += moveDir * moveDistance;
+            }
+            else
+            {
+                // Attempt only Z movement
+                Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
+                bool canMoveZ = !Physics.CapsuleCast(
+                    transform.position,
+                    transform.position + Vector3.up * playerHeight,
+                    playerRadius,
+                    moveDirZ,
+                    moveDistance
+                );
+                if (canMoveZ)
+                {
+                    moveDir = moveDirZ;
+                    transform.position += moveDir * moveDistance;
+                }
+            }
+        }
 
         transform.forward = Vector3.Slerp(transform.forward, moveDir, rotationSpeed * Time.deltaTime);
     }

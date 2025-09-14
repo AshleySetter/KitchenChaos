@@ -5,13 +5,46 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private GameInput gameInput;
+    [SerializeField] private LayerMask countersLayerMask;
 
     private float rotationSpeed = 10f;
     private float playerHeight = 2f;
     private float playerRadius = 0.7f;
+    private float interactDistance = 2f;
 
     private bool isWalking;
+    private Vector3 lastInteractDir;
+
+    private void Awake()
+    {
+        transform.forward = new Vector3(0, 0, -1).normalized; // face down the Z axis initially (towards camera)
+    }
+
     private void Update()
+    {
+        HandleMovement();
+        HandleInteractions();
+    }
+
+    private void HandleInteractions()
+    {
+        Vector2 inputVector = gameInput.GetMovementVectorNormalised();
+        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+        if (moveDir != Vector3.zero)
+        {
+            lastInteractDir = moveDir;
+        }
+        bool raycastHitSomething = Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, countersLayerMask);
+        if (raycastHitSomething)
+        {
+            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            {
+                clearCounter.Interact();
+            }
+        }
+    }
+
+    private void HandleMovement()
     {
         Vector2 inputVector = gameInput.GetMovementVectorNormalised();
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);

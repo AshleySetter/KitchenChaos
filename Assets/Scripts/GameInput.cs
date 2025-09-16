@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameInput : MonoBehaviour
 {
     public event EventHandler OnInteractAction; // event to be triggered when Interact action is performed
+    public event EventHandler OnInteractAlternateAction;
     private PlayerInputActions playerInputActions;
     private void Awake()
     {
@@ -13,6 +14,11 @@ public class GameInput : MonoBehaviour
         playerInputActions.Player.Enable();
 
         playerInputActions.Player.Interact.performed += Interact_performed; // Adds Interact_performed method as event listener to the Interact event in Player action map
+        playerInputActions.Player.InteractAlternate.performed += InteractAlternate_performed;
+    }
+
+    private void InteractAlternate_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnInteractAlternateAction?.Invoke(this, EventArgs.Empty); // Trigger the OnInteractAlternate event
     }
 
     private void Interact_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)

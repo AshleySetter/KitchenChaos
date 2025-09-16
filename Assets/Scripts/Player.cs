@@ -111,6 +111,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             moveDistance
         );
 
+        transform.forward = Vector3.Slerp(transform.forward, moveDir, rotationSpeed * Time.deltaTime);
+
         if (canMoveInInputDirection)
         {
             transform.position += moveDir * moveDistance;
@@ -149,8 +151,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
                 }
             }
         }
-
-        transform.forward = Vector3.Slerp(transform.forward, moveDir, rotationSpeed * Time.deltaTime);
     }
 
     public bool IsWalking()

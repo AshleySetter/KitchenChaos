@@ -592,7 +592,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4293446270372288626, guid: a4d485c3f57c04e458f17263a64f759a, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4293446270372288626, guid: a4d485c3f57c04e458f17263a64f759a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -679,7 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   counterTopPoint: {fileID: 7169337757576437306}
-  cuttingRecipeSOsArray:
+  cuttingRecipeSOArray:
   - {fileID: 11400000, guid: 2fee41dd1cfbada4ea226c125aec65e0, type: 2}
   - {fileID: 11400000, guid: e626fab177f5c92438f58cd886ba6f64, type: 2}
   - {fileID: 11400000, guid: 59cc38861b0894946a5101b28c5dba24, type: 2}

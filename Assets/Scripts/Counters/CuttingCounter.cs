@@ -20,6 +20,8 @@ public class CuttingCounter : BaseCounter
     {
         if (!HasKitchenObject())
         {
+            Debug.Log(player.HasKitchenObject());
+            Debug.Log(HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()));
             // no kitchen object on counter
             if (player.HasKitchenObject() && HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()))
             {

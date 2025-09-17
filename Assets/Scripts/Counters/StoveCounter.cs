@@ -4,25 +4,64 @@ using UnityEngine;
 
 public class StoveCounter : BaseCounter
 {
-    [SerializeField] private FryingRecipeSO[] fryingRecipeSOArray;
+    private enum State
+    {
+        Idle,
+        Frying,
+        Fried,
+        Burned
+    }
 
+    [SerializeField] private FryingRecipeSO[] fryingRecipeSOArray;
+    [SerializeField] private BurningRecipeSO[] burningRecipeSOArray;
+
+    private State state;
     private float fryingTimer;
+    private float burningTimer;
     private FryingRecipeSO fryingRecipeSO;
+    private BurningRecipeSO burningRecipeSO;
+
+    private void Start()
+    {
+        state = State.Idle;
+    }
 
     private void Update()
     {
         if (HasKitchenObject())
         {
-            fryingTimer += Time.deltaTime;
-            if (fryingTimer > fryingRecipeSO.fryingTimerMax)
+            switch (state)
             {
-                // KitchenObject is Fried
-                fryingTimer = 0f;
-                Debug.Log("Fried");
-                GetKitchenObject().DestroySelf();
-                KitchenObject.SpawnKitchenObject(fryingRecipeSO.output, this);
+                case State.Idle:
+                    break;
+                case State.Frying:
+                    fryingTimer += Time.deltaTime;
+                    if (fryingTimer > fryingRecipeSO.fryingTimerMax)
+                    {
+                        // KitchenObject is Fried
+                        GetKitchenObject().DestroySelf();
+                        KitchenObject.SpawnKitchenObject(fryingRecipeSO.output, this);
+                        burningRecipeSO = GetBurningRecipeForInput(fryingRecipeSO.output);
+                        state = State.Fried;
+                        burningTimer = 0f;
+                    }
+                    break;
+                case State.Fried:
+                    if (burningRecipeSO)
+                    {
+                        burningTimer += Time.deltaTime;
+                        if (burningTimer > burningRecipeSO.burningTimerMax)
+                        {
+                            // KitchenObject is Burned
+                            GetKitchenObject().DestroySelf();
+                            KitchenObject.SpawnKitchenObject(burningRecipeSO.output, this);
+                            state = State.Burned;
+                        }
+                    }
+                    break;
+                case State.Burned:
+                    break;
             }
-            Debug.Log(fryingTimer);
         }
     }
 
@@ -36,6 +75,8 @@ public class StoveCounter : BaseCounter
                 // player carrying something
                 player.GetKitchenObject().SetKitchenObjectParent(this);
                 fryingRecipeSO = GetFryingRecipeForInput(GetKitchenObject().GetKitchenObjectSO());
+                state = State.Frying;
+                fryingTimer = 0f;
             }
             else
             {
@@ -53,11 +94,12 @@ public class StoveCounter : BaseCounter
             {
                 // player not carrying anything
                 GetKitchenObject().SetKitchenObjectParent(player);
+                state = State.Idle;
             }
         }
     }
 
-        private FryingRecipeSO GetFryingRecipeForInput(KitchenObjectSO inputKitchenObjectSO)
+    private FryingRecipeSO GetFryingRecipeForInput(KitchenObjectSO inputKitchenObjectSO)
     {
 
         foreach (FryingRecipeSO fryingRecipeSO in fryingRecipeSOArray)
@@ -65,6 +107,19 @@ public class StoveCounter : BaseCounter
             if (fryingRecipeSO.input == inputKitchenObjectSO)
             {
                 return fryingRecipeSO;
+            }
+        }
+        return null;
+    }
+
+    private BurningRecipeSO GetBurningRecipeForInput(KitchenObjectSO inputKitchenObjectSO)
+    {
+
+        foreach (BurningRecipeSO burningRecipeSO in burningRecipeSOArray)
+        {
+            if (burningRecipeSO.input == inputKitchenObjectSO)
+            {
+                return burningRecipeSO;
             }
         }
         return null;

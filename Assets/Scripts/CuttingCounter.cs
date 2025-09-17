@@ -6,6 +6,8 @@ public class CuttingCounter : BaseCounter
 {
     [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOsArray;
 
+    private int cuttingProgress;
+
     public override void Interact(Player player)
     {
         if (!HasKitchenObject())
@@ -15,6 +17,7 @@ public class CuttingCounter : BaseCounter
             {
                 // player carrying something
                 player.GetKitchenObject().SetKitchenObjectParent(this);
+                cuttingProgress = 0;
             }
             else
             {
@@ -41,19 +44,25 @@ public class CuttingCounter : BaseCounter
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO()))
         {
             // There is a KitchenObject on cutting counter and it has a recipe
-            KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
-            GetKitchenObject().DestroySelf();
-            KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+            cuttingProgress++;
+            CuttingRecipeSO recipe = GetCuttingRecipeForInput(GetKitchenObject().GetKitchenObjectSO());
+            if (cuttingProgress >= recipe.cuttingProgressMax)
+            {
+                KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
+                GetKitchenObject().DestroySelf();
+                KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+            }
         }
     }
 
-    private KitchenObjectSO GetOutputForInput(KitchenObjectSO inputKitchenObjectSO)
+    private CuttingRecipeSO GetCuttingRecipeForInput(KitchenObjectSO inputKitchenObjectSO)
     {
+
         foreach (CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOsArray)
         {
             if (cuttingRecipeSO.input == inputKitchenObjectSO)
             {
-                return cuttingRecipeSO.output;
+                return cuttingRecipeSO;
             }
         }
         return null;
@@ -61,6 +70,11 @@ public class CuttingCounter : BaseCounter
 
     private bool HasRecipeWithInput(KitchenObjectSO inputKitchenObjectSO)
     {
-        return GetOutputForInput(inputKitchenObjectSO) != null;
+        return GetCuttingRecipeForInput(inputKitchenObjectSO) != null;
+    }
+
+    private KitchenObjectSO GetOutputForInput(KitchenObjectSO inputKitchenObjectSO)
+    {
+        return GetCuttingRecipeForInput(inputKitchenObjectSO)?.output;
     }
 }

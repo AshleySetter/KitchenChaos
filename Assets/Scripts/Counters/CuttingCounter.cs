@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CuttingCounter : BaseCounter
 {
-    [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOsArray;
+    [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
 
     public event EventHandler<OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler OnCut;
@@ -77,7 +77,7 @@ public class CuttingCounter : BaseCounter
     private CuttingRecipeSO GetCuttingRecipeForInput(KitchenObjectSO inputKitchenObjectSO)
     {
 
-        foreach (CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOsArray)
+        foreach (CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOArray)
         {
             if (cuttingRecipeSO.input == inputKitchenObjectSO)
             {

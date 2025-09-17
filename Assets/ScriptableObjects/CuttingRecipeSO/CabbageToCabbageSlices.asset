@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db27f5a04fde19742bc5dbb867cb9b65, type: 3}
   m_Name: CabbageToCabbageSlices
   m_EditorClassIdentifier: 
-  input: {fileID: 0}
-  output: {fileID: 0}
+  input: {fileID: 11400000, guid: 1acc04d822549e14ba87051dbc225101, type: 2}
+  output: {fileID: 11400000, guid: 50c64ce53967f3243bb1ea34d3099124, type: 2}
+  cuttingProgressMax: 5

@@ -53,6 +53,7 @@
     },
     "dotnet.defaultSolution": "KitchenChaos.sln",
     "cSpell.words": [
+        "evnt",
         "Slerp"
     ]
 }

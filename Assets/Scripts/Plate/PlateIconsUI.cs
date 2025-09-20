@@ -26,7 +26,6 @@ public class PlateIconsUI : MonoBehaviour
 
     private void UpdateVisual()
     {
-        iconTemplate.gameObject.SetActive(false);
         foreach (Transform child in transform)
         {
             if (child == iconTemplate) continue; // skip iconTemplate so we don't destroy our template
@@ -35,7 +34,7 @@ public class PlateIconsUI : MonoBehaviour
         foreach (KitchenObjectSO kitchenObjectSO in plateKitchenObject.GetKitchenObjectSOList())
         {
             Transform iconTransform = Instantiate(iconTemplate, transform);
-            iconTemplate.gameObject.SetActive(true);
+            iconTransform.gameObject.SetActive(true);
             iconTransform.GetComponent<PlateIconSingleUI>().SetKitchenObjectSO(kitchenObjectSO);
         }
     }

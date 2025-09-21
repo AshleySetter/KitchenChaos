@@ -7,6 +7,8 @@ public class DeliveryManager : MonoBehaviour
 {
     public event EventHandler OnRecipeSpawned;
     public event EventHandler onRecipeCompleted;
+    public event EventHandler OnRecipeSuccess;
+    public event EventHandler OnRecipeFail;
 
     public static DeliveryManager Instance { get; private set; }
 
@@ -76,12 +78,15 @@ public class DeliveryManager : MonoBehaviour
                     Debug.Log("Player delivered a correct recipe");
                     waitingRecipeSOList.RemoveAt(i);
                     onRecipeCompleted?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
                     return;
                 }
             }
         }
         // No Matches found! Player delivered an incorrect recipe which wasn't being waited for
         Debug.Log("Player delivered a recipe nobody was waiting for");
+        OnRecipeFail?.Invoke(this, EventArgs.Empty);
+
     }
 
     public List<RecipeSO> GetWaitingRecipeSOList()

@@ -7,6 +7,19 @@ public class SoundManager : MonoBehaviour
 {
     [SerializeField] private AudioClipsRefsSO audioClipsRefsSO;
 
+    private void Start()
+    {
+        DeliveryManager.Instance.OnRecipeSuccess += DeliveryManager_OnRecipeSuccess;
+        DeliveryManager.Instance.OnRecipeFail += DeliveryManager_OnRecipeFail;
+        CuttingCounter.OnAnyCut += CuttingCounter_OnAnyCut;
+    }
+
+    private void CuttingCounter_OnAnyCut(object sender, EventArgs e)
+    {
+        CuttingCounter cuttingCounter = sender as CuttingCounter;
+        PlaySound(audioClipsRefsSO.chop, cuttingCounter.transform.position);
+    }
+
     private void PlaySound(AudioClip audioClip, Vector3 position, float volume = 1f)
     {
         AudioSource.PlayClipAtPoint(audioClip, position, volume);
@@ -15,12 +28,6 @@ public class SoundManager : MonoBehaviour
     private void PlaySound(AudioClip[] audioClips, Vector3 position, float volume = 1f)
     {
         PlaySound(audioClips[UnityEngine.Random.Range(0, audioClips.Length)], position, volume);
-    }
-
-    private void Start()
-    {
-        DeliveryManager.Instance.OnRecipeSuccess += DeliveryManager_OnRecipeSuccess;
-        DeliveryManager.Instance.OnRecipeFail += DeliveryManager_OnRecipeFail;
     }
 
     private void DeliveryManager_OnRecipeSuccess(object sender, EventArgs e)

@@ -6,6 +6,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 {
     public static Player Instance { get; private set; } // Singleton instance as a C# property - static so only one instance exists, same for every instance of class
 
+    public event EventHandler OnPickedSomething;
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged; // event to be triggered when selected counter changes
     public class OnSelectedCounterChangedEventArgs : EventArgs // custom EventArgs class to hold selected counter data
     {
@@ -175,6 +176,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
+        OnPickedSomething?.Invoke(this, EventArgs.Empty);
     }
 
     public KitchenObject GetKitchenObject()

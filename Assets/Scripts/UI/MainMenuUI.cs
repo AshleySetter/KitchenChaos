@@ -15,10 +15,12 @@ public class MainMenuUI : MonoBehaviour
         {
             Loader.Load(Loader.Scene.GameScene);
         });
-        
+
         quitButton.onClick.AddListener(() =>
         {
             Application.Quit();
         });
+
+        Time.timeScale = 1f;
     }
 }

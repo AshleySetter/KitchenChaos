@@ -35,7 +35,9 @@ public class GamePauseUI : MonoBehaviour
 
     private void GameManager_OnGamePaused(object sender, EventArgs e)
     {
-        Show();
+        if (!GameManager.Instance.IsGameOver()) {
+            Show();
+        }
     }
 
     private void Show()
